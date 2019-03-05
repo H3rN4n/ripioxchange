@@ -3,14 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "animate.css": "^3.7.0",
+    "basscss": "8.0.2",
+    "basscss-background-colors": "^2.1.0",
+    "basscss-btn": "^1.1.1",
+    "basscss-btn-primary": "^1.1.0",
+    "basscss-colors": "^2.2.0",
+    "basscss-forms": "^1.0.0",
+    "basscss-input-range": "^3.0.0",
+    "basscss-responsive-layout": "^1.0.1",
+    "basscss-responsive-margin": "^1.1.0",
+    "basscss-responsive-padding": "^1.1.0",
+    "basscss-responsive-position": "^1.0.0",
+    "basscss-responsive-type-scale": "^1.0.1",
+    "basscss-responsive-typography": "^1.0.1",
+    "final-form": "^4.11.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
+    "react-final-form": "^4.0.2",
+    "react-final-form-html5-validation": "^1.0.3",
+    "react-form": "^3.5.7",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -21,5 +40,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {}
 }
