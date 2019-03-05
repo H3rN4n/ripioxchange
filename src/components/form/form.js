@@ -2,7 +2,7 @@ import React from 'react';
 import { Form } from 'react-final-form';
 import { Field } from 'react-final-form-html5-validation';
 
-import { generateBalance, generateFee, substractFromBalance, sleep } from './form.services'
+import { generateBalance, generateFee, substractFromBalance, sleep, validateBalance, fakeRequest } from './form.services'
 
 export class XchangeForm extends React.Component {
   constructor(...args) {
@@ -10,11 +10,12 @@ export class XchangeForm extends React.Component {
 
     this.state = {
       validated: false,
-      totalAmount: generateFee(),
+      fee: generateFee(),
       balance: generateBalance(),
       sending: false,
       success: false,
-      error: false
+      error: false,
+      errors: []
     };
 
   }
@@ -23,28 +24,12 @@ export class XchangeForm extends React.Component {
     if (!value) {
       return 'Required'
     }
-    await sleep(400)
     if (
-      value > this.state.balance
+      !validateBalance(this.state.balance, this.state.fee, value)
     ) {
       return 'Credito insuficiente!'
     }
   })
-
-  validateAddress = value => ({
-    error:
-      !value || !/Hello World/.test(value)
-        ? "Input must contain 'Hello World'"
-        : null,
-    warning:
-      !value || !/^Hello World$/.test(value)
-        ? "Input should equal just 'Hello World'"
-        : null,
-    success:
-      value && /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(value)
-        ? "Thanks for entering 'Hello World'!"
-        : null
-  });
 
   submitBtns(values){
     if(this.state.sending){
@@ -67,7 +52,7 @@ export class XchangeForm extends React.Component {
       return (
         <Form 
           onSubmit={this.onSubmit} 
-          initialValues={{'fee': this.state.totalAmount, amount: 1000}}
+          initialValues={{'fee': this.state.fee, amount: 1000}}
           render={({ handleSubmit, form, submitting, pristine, invalid, values }) => (
             
             <form onSubmit={handleSubmit}
@@ -101,7 +86,6 @@ export class XchangeForm extends React.Component {
                 <div>
                   <label></label>
                   <input {...input} className="input" type="number"
-                placeholder=""
                 step="0.0001" placeholder="" />
                   {meta.error && meta.touched && <span className="red">{meta.error}</span>}
                 </div>
@@ -137,8 +121,10 @@ export class XchangeForm extends React.Component {
       return (
         <div className="mb2 p2 mt1 bg-red rounded animated fadeIn delay-1s">
           <p className="h3 white">Error en la transacción </p>
-          <ul className="list-reset white"> 
-            <li>Tu credito disponible es insuficiente </li>
+          <ul className="list-reset white">
+            {this.state.errors.map((err, i) => {
+            return <li key={i}>{err}</li>
+            })}
           </ul>
         </div>
       )
@@ -172,20 +158,21 @@ export class XchangeForm extends React.Component {
   }
 
   onSubmit = async values => {
-    var balance = parseFloat(this.state.balance).toFixed(4);
+    const balance = parseFloat(this.state.balance).toFixed(4);
     this.setState( { sending: true, success: false, error: true })
     await sleep(1000)
 
     //@Todo fake responses timeout, 400 and 500 
     // window.alert(JSON.stringify(values, 0, 2))
 
-    if(true){
+    let fakeRequestResult = await fakeRequest();
+    if(!fakeRequestResult.isValid){
       this.setState({ 
         sending: false, 
-        submittedValues: values, 
-        // balance: substractFromBalance(balance, values.fee, values.amount), 
+        submittedValues: values,
         success: false,
-        error: true
+        error: true,
+        errors: fakeRequestResult.errors
       })
     } else {
       this.setState({ 

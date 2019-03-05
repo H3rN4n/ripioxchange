@@ -1,4 +1,4 @@
-import { generateFee, generateBalance } from './form.services';
+import { generateFee, generateBalance, substractFromBalance, validateBalance } from './form.services';
 
 test('Generate Fee', () => {
     expect(parseFloat(generateFee())).toBeGreaterThan(0);
@@ -10,8 +10,12 @@ test('Generate Balance', () => {
     expect(parseFloat(generateBalance())).toBeLessThan(200000);
 })
 
-// const sum = require('./sum');
+test('Balance Substraction', () => {
+    expect(parseFloat(substractFromBalance(2000, 0.0001, 1000))).toBe(999.9999);
+})
 
-// test('adds 1 + 2 to equal 3', () => {
-//   expect(sum(1, 2)).toBe(3);
-// });
+test('validate Balance', () => {
+    expect(validateBalance(2000, 0.0001, 1000)).toBe(true);
+    expect(validateBalance(1000, 0.0001, 1000)).toBe(false);
+})
+
